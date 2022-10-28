@@ -25,6 +25,7 @@ def compile():
     print(COLOR_START + "Compiling the executable files...")
     if "target" not in os.listdir():
         os.mkdir("target")
+    # overwrite previous
     os.system("gcc -O3 -o target/calc_pi.c.exe calc_pi.c")
     os.system("g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp")
     os.system("javac -d target/ calc_pi.java")
