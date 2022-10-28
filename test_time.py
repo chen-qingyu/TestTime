@@ -2,10 +2,10 @@
 # Brief: Python3 script for automating compare the running efficiency
 #        of programs written in different programming languages by testing the running time.
 # Author: Qing Yu
-# CreateDate: 2020.10.04
+# CreateDate: 2022.10.28
 # Functions:
-#   - compile programs,
-#   - test running time,
+#   - compile programs
+#   - test running time, and show histogram
 #   - delete redundant files
 
 import os
@@ -45,13 +45,14 @@ def test():
                          ("Java", "java -classpath ./target/ calc_pi"),
                          ("Python", "python calc_pi.py"),
                          ("Rust", os.path.join(".", "target", "calc_pi.rs.exe"))]:
+        print(COLOR_INFO + f"Now preheat and test {lang}...")
         os.system(target)  # preheat
         start = time.time()
-        os.system(target)
+        os.system(target)  # test
         end = time.time()
+        print(COLOR_INFO + f"{lang}: {end - start:.3f}s")
         x.append(lang)
         y.append(end - start)
-        print(COLOR_INFO + f"{lang}: {end - start:.3f}s")
     print(COLOR_FINISH + "Test finished, display test result.")
     plt.bar(x, y)
     plt.xlabel("Language")
@@ -61,8 +62,8 @@ def test():
 
 
 def delete():
-    print(COLOR_START + "Deleting redundant files...")
     if "target" in os.listdir():
+        print(COLOR_START + "Deleting redundant files...")
         for file in ["./target/calc_pi.c.exe",
                      "./target/calc_pi.cpp.exe",
                      "./target/calc_pi.class",
@@ -90,5 +91,5 @@ if __name__ == '__main__':
         elif x in "qQ":
             break
         else:
-            print("Invalid option:", x)
+            print(COLOR_ERROR + "Invalid option: " + x)
     print("Bye!")
