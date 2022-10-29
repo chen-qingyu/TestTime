@@ -4,14 +4,15 @@
 # Author: Qing Yu
 # CreateDate: 2022.10.28
 # Functions:
-#   - compile programs
+#   - build programs
 #   - test running time, and show histogram
-#   - delete redundant files
+#   - clean redundant files
 
 import os
 import colorama
 import time
 import matplotlib.pyplot as plt
+import shutil
 
 colorama.init(autoreset=True)
 
@@ -21,8 +22,8 @@ COLOR_FINISH = colorama.Fore.GREEN + colorama.Style.BRIGHT
 COLOR_ERROR = colorama.Fore.RED + colorama.Style.BRIGHT
 
 
-def compile():
-    print(COLOR_START + "Compiling the executable files...")
+def build():
+    print(COLOR_START + "Building the executable files...")
     if "target" not in os.listdir():
         os.mkdir("target")
     # overwrite previous
@@ -30,12 +31,12 @@ def compile():
     os.system("g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp")
     os.system("javac -d target/ calc_pi.java")
     os.system("rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs")
-    print(COLOR_FINISH + "Compile finished.")
+    print(COLOR_FINISH + "Build finished.")
 
 
 def test():
     if "target" not in os.listdir():
-        print(COLOR_ERROR + "There is no executable file, you may need to compile first.")
+        print(COLOR_ERROR + "There is no executable file, you may need to build first.")
         return
     print(COLOR_START + "Test start.")
     print(COLOR_INFO + "Each program will preheat once to eliminate the influence of the cold start.")
@@ -62,33 +63,27 @@ def test():
     plt.show()
 
 
-def delete():
+def clean():
     if "target" in os.listdir():
-        print(COLOR_START + "Deleting redundant files...")
-        for file in ["./target/calc_pi.c.exe",
-                     "./target/calc_pi.cpp.exe",
-                     "./target/calc_pi.class",
-                     "./target/calc_pi.rs.exe",
-                     "./target/calc_pi.rs.pdb"]:
-            os.remove(file)
-        os.rmdir("./target")
-    print(COLOR_FINISH + "Delete finished.")
+        print(COLOR_START + "Cleaning up redundant files...")
+        shutil.rmtree("./target")
+    print(COLOR_FINISH + "Clean finished.")
 
 
 if __name__ == '__main__':
     while True:
         print()
-        print("C: Compile programs.")
+        print("B: Build programs.")
         print("T: Test running time.")
-        print("D: Delete redundant files.")
+        print("C: Clean redundant files.")
         print("Q: Quit.")
-        x = input("Your choice [C/T(default)/D/Q]: ").strip()
+        x = input("Your choice [B/T(default)/C/Q]: ").strip()
         if x in "tT":  # "" in "tT" is True
             test()
+        elif x in "bB":
+            build()
         elif x in "cC":
-            compile()
-        elif x in "dD":
-            delete()
+            clean()
         elif x in "qQ":
             break
         else:
