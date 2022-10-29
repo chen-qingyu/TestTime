@@ -21,16 +21,22 @@ COLOR_INFO = colorama.Fore.CYAN + colorama.Style.BRIGHT
 COLOR_FINISH = colorama.Fore.GREEN + colorama.Style.BRIGHT
 COLOR_ERROR = colorama.Fore.RED + colorama.Style.BRIGHT
 
+LANGS = (
+    {"name": "C", "build": "gcc -O3 -o target/calc_pi.c.exe calc_pi.c", "exec": os.path.join("target", "calc_pi.c.exe")},
+    {"name": "C++", "build": "g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp", "exec": os.path.join("target", "calc_pi.cpp.exe")},
+    {"name": "Java", "build": "javac -d target/ calc_pi.java", "exec": "java -classpath ./target/ calc_pi"},
+    {"name": "Python", "build": "", "exec": "python calc_pi.py"},
+    {"name": "Rust", "build": "rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs", "exec": os.path.join("target", "calc_pi.rs.exe")},
+)
+
 
 def build():
     print(COLOR_START + "Building the executable files...")
     if "target" not in os.listdir():
         os.mkdir("target")
     # overwrite previous
-    os.system("gcc -O3 -o target/calc_pi.c.exe calc_pi.c")
-    os.system("g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp")
-    os.system("javac -d target/ calc_pi.java")
-    os.system("rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs")
+    for lang in LANGS:
+        os.system(lang["build"])
     print(COLOR_FINISH + "Build finished.")
 
 
@@ -42,18 +48,14 @@ def test():
     print(COLOR_INFO + "Each program will preheat once to eliminate the influence of the cold start.")
     x = []
     y = []
-    for lang, target in [("C", os.path.join(".", "target", "calc_pi.c.exe")),
-                         ("CPP", os.path.join(".", "target", "calc_pi.cpp.exe")),
-                         ("Java", "java -classpath ./target/ calc_pi"),
-                         ("Python", "python calc_pi.py"),
-                         ("Rust", os.path.join(".", "target", "calc_pi.rs.exe"))]:
-        print(COLOR_INFO + f"Now preheat and test {lang}...")
-        os.system(target)  # preheat
+    for lang in LANGS:
+        print(COLOR_INFO + f"Now preheat and test {lang['name']}...")
+        os.system(lang["exec"])  # preheat
         start = time.time()
-        os.system(target)  # test
+        os.system(lang["exec"])  # test
         end = time.time()
-        print(COLOR_INFO + f"{lang}: {end - start:.3f}s")
-        x.append(lang)
+        print(COLOR_INFO + f"{lang['name']}: {end - start:.3f}s")
+        x.append(lang["name"])
         y.append(end - start)
     print(COLOR_FINISH + "Test finished, display test result.")
     plt.bar(x, y)
