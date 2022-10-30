@@ -21,12 +21,16 @@ COLOR_INFO = colorama.Fore.CYAN + colorama.Style.BRIGHT
 COLOR_FINISH = colorama.Fore.GREEN + colorama.Style.BRIGHT
 COLOR_ERROR = colorama.Fore.RED + colorama.Style.BRIGHT
 
+# LANGS: ((name, build, execute), ...)
+# name: string, the name of the programming language.
+# build: string, command for build the target file.
+# execute: string, command for execute the target file.
 LANGS = (
-    {"name": "C", "build": "gcc -O3 -o target/calc_pi.c.exe calc_pi.c", "exec": os.path.join("target", "calc_pi.c.exe")},
-    {"name": "C++", "build": "g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp", "exec": os.path.join("target", "calc_pi.cpp.exe")},
-    {"name": "Java", "build": "javac -d target/ calc_pi.java", "exec": "java -classpath ./target/ calc_pi"},
-    {"name": "Python", "build": "", "exec": "python calc_pi.py"},
-    {"name": "Rust", "build": "rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs", "exec": os.path.join("target", "calc_pi.rs.exe")},
+    ("C", "gcc -O3 -o target/calc_pi.c.exe calc_pi.c", os.path.join("target", "calc_pi.c.exe")),
+    ("C++", "g++ -O3 -o target/calc_pi.cpp.exe calc_pi.cpp", os.path.join("target", "calc_pi.cpp.exe")),
+    ("Java", "javac -d target/ calc_pi.java", "java -classpath ./target/ calc_pi"),
+    ("Python", "", "python calc_pi.py"),
+    ("Rust", "rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs", os.path.join("target", "calc_pi.rs.exe")),
 )
 
 
@@ -35,9 +39,22 @@ def build():
     if "target" not in os.listdir():
         os.mkdir("target")
     # overwrite previous
+    x = []
+    y = []
     for lang in LANGS:
-        os.system(lang["build"])
-    print(COLOR_FINISH + "Build finished.")
+        print(COLOR_INFO + f"building {lang[0]}...")
+        start = time.time()
+        os.system(lang[1])
+        end = time.time()
+        print(COLOR_INFO + f"{lang[0]} build finished ({end - start:.3f}s)")
+        x.append(lang[0])
+        y.append(end - start)
+    print(COLOR_FINISH + "Build finished, show time spent building...")
+    plt.bar(x, y)
+    plt.xlabel("Language")
+    plt.ylabel("Time (s)")
+    plt.title("Building Time")
+    plt.show()
 
 
 def test():
@@ -49,19 +66,19 @@ def test():
     x = []
     y = []
     for lang in LANGS:
-        print(COLOR_INFO + f"Now preheat and test {lang['name']}...")
-        os.system(lang["exec"])  # preheat
+        print(COLOR_INFO + f"Now preheat and test {lang[0]}...")
+        os.system(lang[2])  # preheat
         start = time.time()
-        os.system(lang["exec"])  # test
+        os.system(lang[2])  # test
         end = time.time()
-        print(COLOR_INFO + f"{lang['name']}: {end - start:.3f}s")
-        x.append(lang["name"])
+        print(COLOR_INFO + f"{lang[0]}: {end - start:.3f}s")
+        x.append(lang[0])
         y.append(end - start)
-    print(COLOR_FINISH + "Test finished, display test result.")
+    print(COLOR_FINISH + "Test finished, show time spent running...")
     plt.bar(x, y)
     plt.xlabel("Language")
     plt.ylabel("Time (s)")
-    plt.title("Test Result")
+    plt.title("Running Time")
     plt.show()
 
 
