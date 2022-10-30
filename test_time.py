@@ -21,6 +21,7 @@ COLOR_INFO = colorama.Fore.CYAN + colorama.Style.BRIGHT
 COLOR_FINISH = colorama.Fore.GREEN + colorama.Style.BRIGHT
 COLOR_ERROR = colorama.Fore.RED + colorama.Style.BRIGHT
 
+
 # LANGS: ((name, build, execute), ...)
 # name: string, the name of the programming language.
 # build: string, command for build the target file.
@@ -37,8 +38,10 @@ LANGS = (
 
 def build():
     print(COLOR_START + "Building the executable files...")
+
     if "target" not in os.listdir():
         os.mkdir("target")
+
     # overwrite previous
     x = []
     y = []
@@ -51,6 +54,7 @@ def build():
         x.append(lang[0])
         y.append(end - start)
     print(COLOR_FINISH + "Build finished, show time spent building...")
+
     plt.bar(x, y)
     plt.xlabel("Language")
     plt.ylabel("Time (s)")
@@ -62,8 +66,10 @@ def test():
     if "target" not in os.listdir():
         print(COLOR_ERROR + "There is no executable file, you may need to build first.")
         return
+
     print(COLOR_START + "Test start.")
     print(COLOR_INFO + "Each program will preheat once to eliminate the influence of the cold start.")
+
     x = []
     y = []
     for lang in LANGS:
@@ -76,6 +82,7 @@ def test():
         x.append(lang[0])
         y.append(end - start)
     print(COLOR_FINISH + "Test finished, show time spent running...")
+
     plt.bar(x, y)
     plt.xlabel("Language")
     plt.ylabel("Time (s)")
@@ -87,6 +94,7 @@ def clean():
     if "target" in os.listdir():
         print(COLOR_START + "Cleaning up redundant files...")
         shutil.rmtree("./target")
+
     print(COLOR_FINISH + "Clean finished.")
 
 
@@ -97,6 +105,7 @@ if __name__ == '__main__':
         print("T: Test running time.")
         print("C: Clean redundant files.")
         print("Q: Quit.")
+
         x = input("Your choice [B/T(default)/C/Q]: ").strip()
         if x in "tT":  # "" in "tT" is True
             test()
@@ -108,4 +117,5 @@ if __name__ == '__main__':
             break
         else:
             print(COLOR_ERROR + "Invalid option: " + x)
+
     print("Bye!")
