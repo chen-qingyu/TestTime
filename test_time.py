@@ -31,6 +31,7 @@ LANGS = (
     ("Java", "javac -d target/ calc_pi.java", "java -classpath ./target/ calc_pi"),
     ("Python", "", "python calc_pi.py"),
     ("Rust", "rustc -C opt-level=3 -o target/calc_pi.rs.exe calc_pi.rs", os.path.join("target", "calc_pi.rs.exe")),
+    ("D", "dmd -O -of=target/calc_pi.d.exe calc_pi.d", os.path.join("target", "calc_pi.d.exe"))
 )
 
 
